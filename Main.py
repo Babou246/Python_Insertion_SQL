@@ -7,18 +7,18 @@ from Rollback import *
 db = ps.connect(host="localhost", user="root",password="passer", database="Projet_PythonCSV")
 curseur = db.cursor()
 # Appel des fonctions pour l'insertion à la base de données
-print(f""""
-            ######### #   ##   ######  ##    ##  ##       #  #######  ##    ##  ##     #  #######
-            ###        #  ##   ##      ###   ##   ##     #   ##       ###   ##  ##     #  ##
-            ######### #   ##   #####   ## #  ##    ##   #    ######   ## #  ##  ##     #  #####      
-            ###        #  ##   ##      ##  # ##     ## #     ##       ##  # ##  ##     #  ##
-            ###########   ##   ######  ##   ###      ##      #######  ##   ###  ########  #######
+print(""""
+        ######### #   ##   ######  ##    ##  ##       #  #######  ##    ##  ##     #  #######
+        ###        #  ##   ##      ###   ##   ##     #   ##       ###   ##  ##     #  ##
+        ######### #   ##   #####   ## #  ##    ##   #    ######   ## #  ##  ##     #  #####      
+        ###        #  ##   ##      ##  # ##     ## #     ##       ##  # ##  ##     #  ##
+        ###########   ##   ######  ##   ###      ##      #######  ##   ###  ########  #######
     """)
 
 try: 
     c = 'Y'
     while c == 'Y' or c == 'y' or c == 'yes':
-        print(f"""
+        print("""
             1- Afficher les tables disponibles
             2- Pour voir le menu principale en detail
         """)
@@ -46,11 +46,11 @@ try:
                     print('==> ',element)
                 db.commit()
             elif choice == 2:
-                Rollback()
+                Rollback("Projet_PythonCSV")
             elif choice == 3:
                 remplir_table()
             elif choice == 4:
                 break
-        c = input('Voulez-vous continuer à explorer le menu \nTaper (Y|y) pour dire yes/N pour dire non\n')
+        c = input('Voulez-vous continuer à explorer le menu \nTaper (Y|y) pour dire yes | N pour dire non\n')
 except Exception as e:
     print(e)

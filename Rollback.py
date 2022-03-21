@@ -1,9 +1,9 @@
 import mysql.connector as ps
 from func_util import *
 
-def Rollback():
+def Rollback(data_base):
     db = ps.connect(host="localhost", user="root",
-            password="passer", database="Projet_PythonCSV")
+            password="passer", database=f"{data_base}")
     curseur = db.cursor()
     print("""
         1- Pour vider une table
