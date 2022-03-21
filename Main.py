@@ -7,7 +7,7 @@ from Rollback import *
 db = ps.connect(host="localhost", user="root",password="passer", database="Projet_PythonCSV")
 curseur = db.cursor()
 # Appel des fonctions pour l'insertion à la base de données
-print(""""
+print("""
         ######### #   ##   ######  ##    ##  ##       #  #######  ##    ##  ##     #  #######
         ###        #  ##   ##      ###   ##   ##     #   ##       ###   ##  ##     #  ##
         ######### #   ##   #####   ## #  ##    ##   #    ######   ## #  ##  ##     #  #####      
@@ -24,13 +24,13 @@ try:
         """)
         choix = int(input('Faites le choix\n'))
         if choix == 1:
-            curseur.execute(f"SHOW TABLES")
+            curseur.execute("SHOW TABLES")
             show_table = curseur.fetchall()
             for tables in show_table:
                 print('==>',tables[0])
             db.commit()
         elif choix == 2:
-            print(f"""
+            print("""
                 1- Afficher la table 
                 2- Faire le Vidance des tables au choix
                 3- Remplir les tables
