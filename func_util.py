@@ -37,7 +37,6 @@ def note_verification(n):
     else:
         return sequence
 
-
 # Validité d'une date
 def verify_date(c):
     c = c.strip()
@@ -52,7 +51,6 @@ def verify_date(c):
                 (int(c[1]) == 2) and (int(c[0]) > 28) and ((int(c[2]) % 4 != 0 or int(c[2]) % 100 == 0) and int(c[2]) % 400 != 0)):
             return False
         return True
-
 
 # print(note_verification(tabG[0]['Note']))
 
@@ -74,7 +72,6 @@ def date(chaine):
                 break
     return "-".join(chaine)
 
-
 def num(c):
     number = [str(i) for i in range(10)]
     if len(c) == 7:
@@ -88,7 +85,6 @@ def num(c):
     return c
 
 # verification de la validité du nom d'étudiant
-
 
 def valide_nom(prenom, nom):
     n = 0
@@ -107,7 +103,6 @@ def valide_nom(prenom, nom):
 
 # Fonction pour verifier si un chaine contient une lettre
 
-
 def lettre(chaine):
     p = 0
     for elem in range(len(chaine)):
@@ -118,7 +113,6 @@ def lettre(chaine):
     else:
         return False
 
-
 def verf(num):
     p = 0
     for elem in num:
@@ -128,7 +122,6 @@ def verf(num):
         return True
     else:
         return False
-
 
 def classe(chaine):
     chaine = chaine.strip()
@@ -151,13 +144,7 @@ def moyenne():
             moy = s/(i+1)
             moy_G = (moy + 2*int(note[-1]))/3
             return 'Moyenne devoir :',round(moy,2),'Moyenne Generale :', round(moy_G,2)
-# print(moyenne())
-# def moyenne(liste=[]) :
-#     somme = sum(liste[:-1])
-#     nb_elements = len(liste[:-1])
-#     moyenne = (somme / nb_elements + 2* int(liste[-1]))/3
-#     return 'moyenne_devoir :', moyenne
-
+#
 def moyenne_devoir(l):
     n = len(l)-1
     s = 0
@@ -167,7 +154,7 @@ def moyenne_devoir(l):
     moy_G = (moy + 2*int(l[-1]))/3
     return 'M_d :',round(moy,2),'M_G :',round(moy_G,2)
 
-
+# La validation des conditions
 valide = []
 invalide = []
 
@@ -201,3 +188,149 @@ for i in range(1, len(tabG)):
         invalide.append(tabG[i])
 data = valide.copy()
 # print(data)
+
+
+
+###################################################################################################
+###############################     DEBUT DU PROJET SQL    ########################################
+###################################################################################################
+
+
+def Classe_table(datas):
+    for i in range(0, len(data)):
+        db = ps.connect(host="localhost", user="root",
+                password="passer", database="Projet_PythonCSV")
+        curseur = db.cursor()
+    c = data[i].get('Classe')
+    # datas = [
+    #     {
+    #         "Classe": c
+    #     }
+    # ]
+    datas = [
+        {"Classe": '6emeA'},
+        {"Classe": '6emeB'},
+        {"Classe": '5emeA'},
+        {"Classe": '5emeB'},
+        {"Classe": '4emeA'},
+        {"Classe": '4emeB'},
+        {"Classe": '3emeA'},
+        {"Classe": '3emeB'},
+        {"Classe": 'Tle S2'},
+        {"Classe": 'Tle S1'},
+        {"Classe": 'Tle l2'},
+        {"Classe": "Tle l'"}
+]
+    for fiche in datas:
+        # print(fiche)
+        
+        curseur.execute("INSERT INTO Classe(nom) VALUES (%(Classe)s)", fiche)
+    db.commit()
+    # db.close()
+Classe_table(data)
+
+
+########## DEBUT TAB MATIERE ##########
+db = ps.connect(host="localhost", user="root",
+                password="passer", database="Projet_PythonCSV")
+curseur = db.cursor()
+query = "SELECT * FROM Matiere"
+curseur.execute(query)
+tabMat = curseur.fetchall()
+# print(tabMat)
+
+def idmat(mat):
+    for tab in tabMat:
+        if tab[0] == mat:
+            return tab[1]
+
+
+########## FIN TAB MATIERE ##########
+def Notes_table(data):
+    curseur = db.cursor()
+    for i in range(0, len(data)):
+        
+        note = data[i].get('Note')
+        nume = data[i]['Numero']
+        # print(nume)
+        # print(note)
+        for k in note:
+            # print(note[k])
+            comp = note[k][-1]
+            id_mat = idmat(k)
+            if id_mat is None:
+                id_mat = 2
+            # print(k, id_mat)
+            # insert_compo = "INSERT INTO Notes(note_val,note_type,id_mat,numero) VALUES(%s,%s,%s,%s)", (int(comp), 2, id_mat, nume)
+            curseur.execute("INSERT INTO Notes(note_val,note_type,id_mat) VALUES(%s,%s,%s)", (int(comp), 2, id_mat))
+
+
+            devoirs = note[k][:-1]
+            for dev in devoirs:
+                # print(dev)
+                curseur.execute("INSERT INTO Notes(note_val,note_type,id_mat) VALUES(%s,%s,%s)",(int(round(float(dev))),1,id_mat))
+
+    db.commit()           
+
+# print(tabMatiere)
+
+####################### Remplissage de la table Matiére #####################################
+
+def Matiere_table(data):
+    curseur = db.cursor()
+    tabMatiere = []
+    for d in range(len(data)):
+        notes = data[d].get('Note')
+        for key in notes.keys():
+
+            if key.startswith('F'):
+                key = "Français"
+            if key.startswith('A'):
+                key = 'Anglais'
+
+            if key.startswith('M'):
+                key = 'Math'
+            if key == 'Science_Physique':
+                key = 'PC'
+
+            if key not in tabMatiere:
+                tabMatiere.append(key)
+                curseur.execute(
+                    "INSERT INTO Matiere(nom_matiere) VALUES(%s)", (key,))
+    db.commit()
+
+# print(tabMatiere)
+
+################################  Remplissage de la table Eleve #######################################
+def Eleve_table(data):
+    for i in range(0, len(data)):
+        curseur = db.cursor()
+        numero = data[i].get('Numero')
+        nom = data[i].get('Nom')
+        prenom = data[i].get('Prénom')
+        dates = data[i].get('Date')
+        datas = [
+            {
+                "Nom": nom,
+                "prenom": prenom,
+                "Date": dates
+            }
+        ]
+        for fiche in datas:
+            # print(fiche)
+            curseur.execute("INSERT INTO Eleve(nom,prenom,dates) VALUES (%(Nom)s,%(prenom)s,%(Date)s)", fiche)
+    db.commit()
+# db.close()
+
+
+def remplir_table():
+    try:
+        Eleve_table(data)
+        Matiere_table(data)
+        Notes_table(data)
+        Classe_table(data)
+    except Exception as e:
+        print(e)
+############################################## FIN DE SCRIPT #################################################
+################################################# TRIGGERS ###################################################
+
